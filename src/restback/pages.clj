@@ -37,6 +37,7 @@
 					[:li "Clojure (compojure, hiccup, ring-json, org.clojure/java.jdbc)"]
 					[:li "REST api (" [:a {:href "help"} "API"] ")"] 
 					[:li "Frontend (Backbone, Underscore, jQuery)"]]]
+			[:p "List will be pushed to server after save button click!"]
 			[:div.container
 				[:h3 "Users list:"]
 				(post-user-form)

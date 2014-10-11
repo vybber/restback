@@ -100,7 +100,7 @@ var App = Backbone.View.extend({
 	},
 	initialize: function () {
 
-		this.newUserView = new NewUserView({
+		var newUserView = new NewUserView({
 			model: usersCollection,
 			el: $('.new-user')
 		});		
@@ -108,9 +108,6 @@ var App = Backbone.View.extend({
 		this.listenTo(this.model, 'add', this.addUser);
 
 		this.model.fetch();
-	},
-	render: function () {
-		this.newUserView.render();
 	},
 	saveUsers: function () {
 		this.model.save();
@@ -126,5 +123,3 @@ var usersCollection = new UserCollection();
 var app = new App({
 	model: usersCollection
 });
-
-app.render();
