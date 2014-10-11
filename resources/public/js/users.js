@@ -74,7 +74,6 @@ var UserItemView = Backbone.View.extend({
 	initialize: function () {
 		this.listenTo(this.model, 'destroy', this.remove);
 		this.listenTo(this.model, 'sync', this.render);
-		this.listenTo(this.model, 'error', this.modelError)
 	},
 	render: function () {
 		this.$el.html(this.template(this.model.toJSON()));
@@ -86,10 +85,6 @@ var UserItemView = Backbone.View.extend({
 	},
 	clean: function  () {
 		this.model.destroy()
-	},
-	modelError: function () {
-		console.log('model error');
-		console.log('arguments');
 	}
 });
 
