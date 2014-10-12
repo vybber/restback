@@ -1,5 +1,6 @@
 (ns restback.pages
-	(:require [hiccup.page :refer :all]))
+	(:use hiccup.page
+		  hiccup.form))
 
 (def help 
 	(html5 [:div
@@ -7,8 +8,9 @@
 			[:ul
 				[:li "GET users"]
 				[:li "POST users"]
-				[:li "GET users\\id"]
-				[:li "DELETE users\\id"]]]))
+				[:li "GET users/id"]
+				[:li "DELETE users/id"]
+				[:li "PUT users/id"]]]))
 
 (defn post-user-form []
 	[:div.new-user
@@ -21,6 +23,23 @@
 		[:label "Address"
 			[:input {:type "text" :name "address"}]]
 		[:button.add "Add"]])
+
+(defn item-template []
+	[:script#item-template {:type "text/template"}
+		[:span.label "Login:"] 
+			[:span.view "<%= login %>"] 
+			[:input.hide {:type "text"  :name "login" :value "<%= login %>"}]
+		[:span.label "Firstname:"] 
+			[:span.view "<%= firstname %>"] 
+			[:input.hide {:type "text"  :name "firstname" :value "<%= firstname %>"}]
+		[:span.label "Lastname:"] 
+			[:span.view "<%= lastname %>"] 
+			[:input.hide {:type "text"  :name "lastname" :value "<%= lastname %>"}]
+		[:span.label "Address:"] 
+			[:span.view "<%= address %>"] 
+			[:input.hide {:type "text"  :name "address" :value "<%= address %>"}]
+		[:button.edit "Edit"]
+		[:button.delete "Delete"]])
 
 (def main 
 	(html5 {:lang "en"}
@@ -43,5 +62,6 @@
 				(post-user-form)
 				[:div.list-users [:ul]]
 				[:button.save "Save"]]
+			(item-template)
 			(include-js "js/users.js")
 			(include-css "css/users.css")]]))

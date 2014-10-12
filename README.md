@@ -9,7 +9,7 @@ Uses following languages, libraries:
 ## Usage
 
 
-Run repl first:
+Run repl first (requires only once):
 ```
 (use 'restback.db)
 (create-users-table)
@@ -20,10 +20,11 @@ Supported API calls:
 
 * *GET* users
 * *POST* users
-* *GET* users\id
-* *DELETE* users\id
+* *GET* users/id
+* *DELETE* users/id
+* *PUT* users/id
 
-Request example for POST action:
+Request body example for POST action:
 ```
 {
 	"login": "my_secure_login", 

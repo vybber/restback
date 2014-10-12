@@ -26,51 +26,51 @@ var UserCollection = Backbone.Collection.extend({
 	url: 'users',
 	save: function  () {
 		var users = _.chain(this.models)
-								.filter(function  (user) {	return user.isNew(); })
-								.map(function (user) { return user.save(); })
-								.value();
+						.filter(function  (user) {	return user.isNew(); })
+						.map(function (user) { return user.save(); })
+						.value();
 
 		if (!users.length)
 			return;
 
-		$.when.apply(this, users).done(function () {
-			console.log(arguments)
+		$.when.apply(this, users).then(function () {
+			console.log("All finished!")
 		})
 	}
 });
+
+var getUserFromImput = function(el) {
+	var login = el.find('input[name="login"]');
+	var firstname = el.find('input[name="firstname"]');
+	var lastname = el.find('input[name="lastname"]');
+	var address = el.find('input[name="address"]');
+
+	return {
+		login: login.val(),
+		firstname: firstname.val(),
+		lastname: lastname.val(),
+		address: address.val()
+	};
+};
 
 var NewUserView = Backbone.View.extend({
 	events: {
 		'click .add': 'addUser'
 	},
 	addUser: function () {
-		var login = this.$el.find('input[name="login"]');
-		var firstname = this.$el.find('input[name="firstname"]');
-		var lastname = this.$el.find('input[name="lastname"]');
-		var address = this.$el.find('input[name="address"]');
-
-		this.model.add(new UserModel({
-			login: login.val(),
-			firstname: firstname.val(),
-			lastname: lastname.val(),
-			address: address.val()
-		}));
-
-		login.val('');
-		firstname.val('');
-		lastname.val('');
-		address.val('');
-
-		login.focus();
+		this.model.add(new UserModel(getUserFromImput(this.$el)));
+		this.$el.find('input').val('');
+		this.$el.find('input[name=login]').focus();
 	}
 });
 
 var UserItemView = Backbone.View.extend({
 	tagName: 'li',
 	events: {
-		'click .delete': 'clean'
+		'click .delete': 'clean',
+		'click .edit': 'toggle'
 	},
-	template: _.template('<span class="hide">*</span><span><%= login %></span><span><%= firstname %></span><span><%= lastname %></span><span><%= address %></span><button class="delete">Delete</button>'),
+	template: _.template($('#item-template').html()),
 	initialize: function () {
 		this.listenTo(this.model, 'destroy', this.remove);
 		this.listenTo(this.model, 'sync', this.render);
@@ -78,13 +78,18 @@ var UserItemView = Backbone.View.extend({
 	render: function () {
 		this.$el.html(this.template(this.model.toJSON()));
 
-		if (this.model.isNew()) {
-			this.$el.find('.hide').removeClass('hide');
+		if (this.model.isNew() || this.model.hasChanged()) {
+			this.$el.prepend($('<span>').text('*'));
 		}
 		return this;
 	},
 	clean: function  () {
 		this.model.destroy()
+	},
+	toggle: function () {
+		this.$el.find('.edit').prop('disabled', true);
+		this.$el.find('.view').hide();
+		this.$el.find('input').show();
 	}
 });
 
@@ -96,7 +101,7 @@ var App = Backbone.View.extend({
 	initialize: function () {
 
 		var newUserView = new NewUserView({
-			model: usersCollection,
+			model: this.model,
 			el: $('.new-user')
 		});		
 

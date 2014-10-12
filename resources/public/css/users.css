@@ -1,7 +1,19 @@
+* {
+font-family: verdana, helvetica, arial, sans-serif;
+}
+
 span {
-	padding: 2px 2px 2px 2px;
+	padding: 0px 2px 0px 2px;
 }
 
 .hide {
 	display: none;
+}
+
+.mark {
+	display: none;
+}
+
+.label {
+	font-weight: bold;
 }
