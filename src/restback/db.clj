@@ -27,6 +27,13 @@
 		:address address})]
 		(first (vals (first res)))))
 
+(defn update-user! [id login firstname lastname address]
+	(let [user {:login login
+				:firstname firstname
+				:lastname lastname
+				:address address}]
+		(update! restback-db :users user ["id = ?" id])))
+
 (defn delete-user! [id]
 	(delete! restback-db :users ["id = ?" id]))
 

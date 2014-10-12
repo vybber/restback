@@ -19,7 +19,9 @@
 
 (defn user-put-action
   [id {:keys [login firstname lastname address]}]
-  (status {} 204))
+  (do 
+    (db/update-user! id login firstname lastname address)
+    (status {} 204)))
 
 (defroutes app-routes
   (GET "/" [] p/main)

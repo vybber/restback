@@ -60,6 +60,7 @@
 			[:div.container
 				[:h3 "Users list:"]
 				(post-user-form)
+				[:button.save "Save"]
 				[:div.list-users [:ul]]
 				[:button.save "Save"]]
 			(item-template)

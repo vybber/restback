@@ -1,7 +1,7 @@
 Backbone.ajax = function() {
 	var args = Array.prototype.slice.call(arguments, 0);
-
-	if (args[0].type == 'POST') {
+	//jQuery ajax fix for 201 and 200 empty responses
+	if (args[0].type == 'POST' || args[0].type == 'PUT') {
 		args[0].dataType = 'text';
 	}
 
@@ -17,7 +17,20 @@ var UserModel = Backbone.Model.extend({
 					id: _.last(locationHeader.split('/'))
 				});
 		}
+		if (!resp) {
+			return this.attributes;
+		}
 		return resp;
+	},
+	sync: function (method, model, options) {
+		// can be overriden behiavor for PUT, 
+		// for example if update require POST action with id
+		/*
+		if (method == 'update') {
+			method = 'create';
+		}*/
+		 
+		Backbone.sync.call(this, method, model, options);
 	}
 });
 
@@ -25,17 +38,10 @@ var UserCollection = Backbone.Collection.extend({
 	model: UserModel,
 	url: 'users',
 	save: function  () {
-		var users = _.chain(this.models)
-						.filter(function  (user) {	return user.isNew() || user.hasChanged(); })
-						.map(function (user) { return user.save(); })
-						.value();
-
-		if (!users.length)
-			return;
-
-		$.when.apply(this, users).then(function () {
-			console.log("All finished!")
-		})
+		return _.chain(this.models)
+			.filter(function  (user) {	return user.isNew() || user.hasChanged(); })
+			.map(function (user) { return user.save(); })
+			.value();
 	}
 });
 
@@ -75,6 +81,7 @@ var UserItemView = Backbone.View.extend({
 		this.listenTo(this.model, 'destroy', this.remove);
 		this.listenTo(this.model, 'sync', this.render);
 		this.listenTo(this.model, 'change', this.render);
+		this.listenTo(this.model, 'all', this.logEvents);
 	},
 	render: function () {
 		this.$el.html(this.template(this.model.toJSON()));
@@ -83,6 +90,9 @@ var UserItemView = Backbone.View.extend({
 			this.$el.prepend($('<span>').text('*'));
 		}
 		return this;
+	},
+	logEvents: function () {
+		console.log(arguments);
 	},
 	clean: function  () {
 		this.model.destroy()
@@ -116,7 +126,11 @@ var App = Backbone.View.extend({
 		this.model.fetch();
 	},
 	saveUsers: function () {
-		this.model.save();
+		var promises = this.model.save();
+
+		$.when.apply(promises).then(function () {
+			console.log('All finished!');
+		});
 	},
 	addUser: function (user) {
 		this.$el.find('.list-users ul')
