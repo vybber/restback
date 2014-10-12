@@ -26,7 +26,7 @@ var UserCollection = Backbone.Collection.extend({
 	url: 'users',
 	save: function  () {
 		var users = _.chain(this.models)
-						.filter(function  (user) {	return user.isNew(); })
+						.filter(function  (user) {	return user.isNew() || user.hasChanged(); })
 						.map(function (user) { return user.save(); })
 						.value();
 
@@ -70,10 +70,11 @@ var UserItemView = Backbone.View.extend({
 		'click .delete': 'clean',
 		'click .edit': 'toggle'
 	},
-	template: _.unescape(_.template($('#item-template').html())),
+	template: _.template(_.unescape($('#item-template').html())),
 	initialize: function () {
 		this.listenTo(this.model, 'destroy', this.remove);
 		this.listenTo(this.model, 'sync', this.render);
+		this.listenTo(this.model, 'change', this.render);
 	},
 	render: function () {
 		this.$el.html(this.template(this.model.toJSON()));
@@ -87,9 +88,14 @@ var UserItemView = Backbone.View.extend({
 		this.model.destroy()
 	},
 	toggle: function () {
-		this.$el.find('.edit').prop('disabled', true);
-		this.$el.find('.view').hide();
-		this.$el.find('input').show();
+		var button = this.$el.find('.edit');
+		if (button.text() == 'Edit') {
+			button.text('OK');
+			this.$el.find('.view').hide();
+			this.$el.find('input').show();
+		} else {
+			this.model.set(getUserFromImput(this.$el));
+		}
 	}
 });
 
