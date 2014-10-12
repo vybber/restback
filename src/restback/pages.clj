@@ -28,16 +28,16 @@
 	[:script#item-template {:type "text/template"}
 		[:span.label "Login:"] 
 			[:span.view "<%= login %>"] 
-			[:input.hide {:type "text"  :name "login" :value "<%= login %>"}]
+			[:input {:type "text"  :name "login" :value "<%= login %>"}]
 		[:span.label "Firstname:"] 
 			[:span.view "<%= firstname %>"] 
-			[:input.hide {:type "text"  :name "firstname" :value "<%= firstname %>"}]
+			[:input {:type "text"  :name "firstname" :value "<%= firstname %>"}]
 		[:span.label "Lastname:"] 
 			[:span.view "<%= lastname %>"] 
-			[:input.hide {:type "text"  :name "lastname" :value "<%= lastname %>"}]
+			[:input {:type "text"  :name "lastname" :value "<%= lastname %>"}]
 		[:span.label "Address:"] 
 			[:span.view "<%= address %>"] 
-			[:input.hide {:type "text"  :name "address" :value "<%= address %>"}]
+			[:input {:type "text"  :name "address" :value "<%= address %>"}]
 		[:button.edit "Edit"]
 		[:button.delete "Delete"]])
 

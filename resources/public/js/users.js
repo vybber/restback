@@ -70,7 +70,7 @@ var UserItemView = Backbone.View.extend({
 		'click .delete': 'clean',
 		'click .edit': 'toggle'
 	},
-	template: _.template($('#item-template').html()),
+	template: _.unescape(_.template($('#item-template').html())),
 	initialize: function () {
 		this.listenTo(this.model, 'destroy', this.remove);
 		this.listenTo(this.model, 'sync', this.render);
